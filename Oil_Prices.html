@@ -327,6 +327,11 @@
         </div>
         <div class="ticker-divider"></div>
         <div class="ticker-item">
+          <span class="ticker-label">Crude Oil</span>
+          <span class="ticker-value" id="ticker-crude-gal">—</span>
+        </div>
+        <div class="ticker-divider"></div>
+        <div class="ticker-item">
           <span class="ticker-label">Heating Oil</span>
           <span class="ticker-value" id="ticker-heating">—</span>
         </div>
@@ -448,10 +453,11 @@
         if (lastRow < 0) return;
 
         var numCols = data.getNumberOfColumns();
-        var crudeIdx = -1, heatingIdx = -1, bottomIdx = -1;
+        var crudeIdx = -1, crudeGalIdx = -1, heatingIdx = -1, bottomIdx = -1;
         for (var i = 1; i < numCols; i++) {
           var label = data.getColumnLabel(i).toLowerCase();
           if (label === 'wti crude oil price') crudeIdx = i;
+          else if (label === 'crude oil / gallon') crudeGalIdx = i;
           else if (label.indexOf('heating') !== -1) heatingIdx = i;
           else if (label.indexOf('bottom') !== -1) bottomIdx = i;
         }
@@ -466,16 +472,19 @@
         }
 
         var crude   = lastVal(crudeIdx);
+        var crudeGal = lastVal(crudeGalIdx);
         var heating = lastVal(heatingIdx);
         var bottom  = lastVal(bottomIdx);
 
-        var crudeEl   = document.getElementById('ticker-crude');
-        var heatingEl = document.getElementById('ticker-heating');
-        var bottomEl  = document.getElementById('ticker-bottom');
+        var crudeEl    = document.getElementById('ticker-crude');
+        var crudeGalEl = document.getElementById('ticker-crude-gal');
+        var heatingEl  = document.getElementById('ticker-heating');
+        var bottomEl   = document.getElementById('ticker-bottom');
 
-        if (crude   !== null && crudeEl)   crudeEl.textContent   = '$' + crude.toFixed(2) + ' / Barrel';
-        if (heating !== null && heatingEl) heatingEl.textContent = '$' + heating.toFixed(2) + ' / Gallon';
-        if (bottom  !== null && bottomEl)  bottomEl.textContent  = '$' + bottom.toFixed(2) + ' / Gallon';
+        if (crude    !== null && crudeEl)    crudeEl.textContent    = '$' + crude.toFixed(2) + ' / Barrel';
+        if (crudeGal !== null && crudeGalEl) crudeGalEl.textContent = '$' + crudeGal.toFixed(2) + ' / Gallon';
+        if (heating  !== null && heatingEl)  heatingEl.textContent  = '$' + heating.toFixed(2) + ' / Gallon';
+        if (bottom   !== null && bottomEl)   bottomEl.textContent   = '$' + bottom.toFixed(2) + ' / Gallon';
       }
 
       function buildLegend(data) {
