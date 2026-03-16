@@ -507,6 +507,160 @@
         .ticker-value { font-size: 18px; }
         .chart-header { flex-direction: column; }
       }
+
+      /* ── Taskbar ── */
+      .page { padding-bottom: 52px; }
+
+      .taskbar {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        height: 36px;
+        background: var(--win-gray);
+        border-top: 2px solid var(--win-white);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 4px;
+        z-index: 100;
+      }
+
+      .start-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: 'VT323', monospace;
+        font-size: 19px;
+        font-weight: bold;
+        color: var(--win-black);
+        background: var(--win-gray);
+        border-top:    2px solid var(--win-white);
+        border-left:   2px solid var(--win-white);
+        border-right:  2px solid var(--win-darker);
+        border-bottom: 2px solid var(--win-darker);
+        padding: 2px 10px 2px 6px;
+        cursor: pointer;
+        height: 28px;
+        user-select: none;
+        flex-shrink: 0;
+      }
+
+      .start-btn:active {
+        border-top:    2px solid var(--win-darker);
+        border-left:   2px solid var(--win-darker);
+        border-right:  2px solid var(--win-white);
+        border-bottom: 2px solid var(--win-white);
+      }
+
+      .start-logo { width: 18px; height: 18px; image-rendering: pixelated; flex-shrink: 0; }
+
+      .taskbar-divider {
+        width: 2px; height: 24px;
+        border-left: 1px solid var(--win-darker);
+        border-right: 1px solid var(--win-white);
+        margin: 0 2px;
+        flex-shrink: 0;
+      }
+
+      .taskbar-tray {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        border-top:    1px solid var(--win-darker);
+        border-left:   1px solid var(--win-darker);
+        border-right:  1px solid var(--win-white);
+        border-bottom: 1px solid var(--win-white);
+        padding: 2px 8px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+
+      .taskbar-clock {
+        font-family: 'VT323', monospace;
+        font-size: 17px;
+        color: var(--win-black);
+      }
+
+      .taskbar-program {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: 'VT323', monospace;
+        font-size: 16px;
+        color: var(--win-black);
+        background: var(--win-gray);
+        border-top:    2px solid var(--win-darker);
+        border-left:   2px solid var(--win-darker);
+        border-right:  2px solid var(--win-white);
+        border-bottom: 2px solid var(--win-white);
+        padding: 2px 10px;
+        height: 26px;
+        text-decoration: none;
+        min-width: 140px;
+        flex-shrink: 0;
+      }
+
+      /* ── Start Menu ── */
+      .start-menu {
+        position: fixed;
+        bottom: 36px; left: 0;
+        width: 210px;
+        background: var(--win-gray);
+        border-top:    2px solid var(--win-white);
+        border-left:   2px solid var(--win-white);
+        border-right:  2px solid var(--win-darker);
+        border-bottom: 2px solid var(--win-darker);
+        display: none;
+        z-index: 200;
+        flex-direction: row;
+      }
+
+      .start-menu.open { display: flex; }
+
+      .start-menu-sidebar {
+        width: 22px;
+        background: linear-gradient(180deg, var(--win-title2) 0%, var(--win-title) 100%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 6px;
+        flex-shrink: 0;
+      }
+
+      .start-menu-sidebar-text {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-family: 'VT323', monospace;
+        font-size: 16px;
+        color: var(--win-white);
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+      }
+
+      .start-menu-sidebar-text strong { font-weight: bold; }
+
+      .start-menu-items { flex: 1; padding: 4px 0; }
+
+      .start-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 14px;
+        font-family: 'VT323', monospace;
+        font-size: 18px;
+        color: var(--win-black);
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .start-menu-item:hover { background: var(--win-title); color: var(--win-white); }
+
+      .start-menu-sep {
+        height: 1px;
+        background: var(--win-darker);
+        box-shadow: 0 1px 0 var(--win-white);
+        margin: 3px 6px;
+      }
     </style>
   </head>
   <body>
@@ -522,7 +676,7 @@
           <div class="win-titlebar-btns">
             <div class="win-btn">_</div>
             <div class="win-btn">□</div>
-            <div class="win-btn">✕</div>
+            <div class="win-btn" onclick="window.location.href='index.html'" title="Close">✕</div>
           </div>
         </div>
 
@@ -973,6 +1127,60 @@
 
         animFrame = requestAnimationFrame(step);
       }
+    <!-- Start menu -->
+    <div class="start-menu" id="startMenu">
+      <div class="start-menu-sidebar">
+        <span class="start-menu-sidebar-text"><strong>Windows</strong> 95</span>
+      </div>
+      <div class="start-menu-items">
+        <a class="start-menu-item" href="Oil_Prices.html">📊 Oil Prices</a>
+        <div class="start-menu-sep"></div>
+        <span class="start-menu-item">⚙️ Settings</span>
+        <div class="start-menu-sep"></div>
+        <a class="start-menu-item" href="index.html">🔌 Shut Down...</a>
+      </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <button class="start-btn" id="startBtn" onclick="toggleStart()">
+        <svg class="start-logo" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+          <rect x="0" y="0" width="8" height="8" fill="#ff0000"/>
+          <rect x="10" y="0" width="8" height="8" fill="#00ff00"/>
+          <rect x="0" y="10" width="8" height="8" fill="#0000ff"/>
+          <rect x="10" y="10" width="8" height="8" fill="#ffff00"/>
+        </svg>
+        Start
+      </button>
+      <div class="taskbar-divider"></div>
+      <a class="taskbar-program" href="Oil_Prices.html">📊 Oil Prices</a>
+      <div class="taskbar-tray">
+        <span class="taskbar-clock" id="clock">12:00 PM</span>
+      </div>
+    </div>
+
+    <script>
+      function updateClock() {
+        var now = new Date();
+        var h = now.getHours(), m = now.getMinutes();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        document.getElementById('clock').textContent = h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+      }
+      updateClock();
+      setInterval(updateClock, 10000);
+
+      function toggleStart() {
+        document.getElementById('startMenu').classList.toggle('open');
+      }
+
+      document.addEventListener('click', function(e) {
+        var menu = document.getElementById('startMenu');
+        var btn  = document.getElementById('startBtn');
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.remove('open');
+        }
+      });
     </script>
   </body>
 </html>
