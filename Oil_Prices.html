@@ -323,17 +323,17 @@
       <div class="ticker">
         <div class="ticker-item">
           <span class="ticker-label">WTI Crude</span>
-          <span class="ticker-value">USD / Barrel</span>
+          <span class="ticker-value" id="ticker-crude">—</span>
         </div>
         <div class="ticker-divider"></div>
         <div class="ticker-item">
           <span class="ticker-label">Heating Oil</span>
-          <span class="ticker-value">USD / Gallon</span>
+          <span class="ticker-value" id="ticker-heating">—</span>
         </div>
         <div class="ticker-divider"></div>
         <div class="ticker-item">
           <span class="ticker-label">Bottom Line Oil</span>
-          <span class="ticker-value">USD / Gallon</span>
+          <span class="ticker-value" id="ticker-bottom">—</span>
         </div>
         <div class="ticker-divider"></div>
         <div class="ticker-item">
@@ -350,12 +350,12 @@
         <div class="chart-controls">
           <button class="zoom-btn" data-days="1">1D</button>
           <button class="zoom-btn" data-days="5">5D</button>
-          <button class="zoom-btn" data-days="7">1W</button>
+          <button class="zoom-btn active" data-days="7">1W</button>
           <button class="zoom-btn" data-days="30">1M</button>
           <button class="zoom-btn" data-days="90">3M</button>
           <button class="zoom-btn" data-days="180">6M</button>
           <button class="zoom-btn" data-days="365">1Y</button>
-          <button class="zoom-btn active" data-days="0">Max</button>
+          <button class="zoom-btn" data-days="0">Max</button>
           <div class="date-range">
             <label>From</label>
             <input type="date" id="date-from">
@@ -383,7 +383,7 @@
       var allData       = null;
       var chart         = null;
       var COLORS        = ['#c8a96e', '#4a7fa5', '#f4c20d', '#3d9970', '#ab47bc', '#00acc1'];
-      var currentDays   = 0;
+      var currentDays   = 7;
       var activeLines   = {};   // colIndex (1-based) -> true/false
       var currentView   = null; // the filtered DataView currently in use
       var currentYRange = null; // the currently rendered Y range
@@ -405,9 +405,14 @@
               activeLines[i] = true;
             }
             buildLegend(allData);
+            updateTickers(allData);
             initControls();
-            currentView = allData;
-            drawChart(allData);
+            // Default to 1W view
+            var range = getDateRange(allData);
+            var to   = range.max;
+            var from = new Date(to.getTime() - 7 * 86400000);
+            currentView = filterData(allData, from, to);
+            drawChart(currentView);
           })
           .catch(function(e) {
             document.getElementById('chart_div').innerHTML =
@@ -436,6 +441,41 @@
           data.addRow(row);
         }
         return data;
+      }
+
+      function updateTickers(data) {
+        var lastRow = data.getNumberOfRows() - 1;
+        if (lastRow < 0) return;
+
+        var numCols = data.getNumberOfColumns();
+        var crudeIdx = -1, heatingIdx = -1, bottomIdx = -1;
+        for (var i = 1; i < numCols; i++) {
+          var label = data.getColumnLabel(i).toLowerCase();
+          if (label.indexOf('crude') !== -1 || label.indexOf('wti') !== -1) crudeIdx = i;
+          else if (label.indexOf('heating') !== -1) heatingIdx = i;
+          else if (label.indexOf('bottom') !== -1) bottomIdx = i;
+        }
+
+        function lastVal(colIdx) {
+          if (colIdx === -1) return null;
+          for (var r = lastRow; r >= 0; r--) {
+            var v = data.getValue(r, colIdx);
+            if (v !== null && !isNaN(v)) return v;
+          }
+          return null;
+        }
+
+        var crude   = lastVal(crudeIdx);
+        var heating = lastVal(heatingIdx);
+        var bottom  = lastVal(bottomIdx);
+
+        var crudeEl   = document.getElementById('ticker-crude');
+        var heatingEl = document.getElementById('ticker-heating');
+        var bottomEl  = document.getElementById('ticker-bottom');
+
+        if (crude   !== null && crudeEl)   crudeEl.textContent   = '$' + crude.toFixed(2) + ' / Barrel';
+        if (heating !== null && heatingEl) heatingEl.textContent = '$' + heating.toFixed(2) + ' / Gallon';
+        if (bottom  !== null && bottomEl)  bottomEl.textContent  = '$' + bottom.toFixed(2) + ' / Gallon';
       }
 
       function buildLegend(data) {
