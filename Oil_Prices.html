@@ -338,7 +338,7 @@
         <div class="ticker-divider"></div>
         <div class="ticker-item">
           <span class="ticker-label">Source</span>
-          <span class="ticker-value" style="font-size:13px; color: var(--muted);">Bumbo's crappy google sheet</span>
+          <span class="ticker-value" style="font-size:13px; color: var(--muted);">Bumbo's crappy google sheet · Live-ish</span>
         </div>
       </div>
 
@@ -451,7 +451,7 @@
         var crudeIdx = -1, heatingIdx = -1, bottomIdx = -1;
         for (var i = 1; i < numCols; i++) {
           var label = data.getColumnLabel(i).toLowerCase();
-          if (label.indexOf('crude') !== -1 || label.indexOf('wti') !== -1) crudeIdx = i;
+          if (label === 'wti crude oil price') crudeIdx = i;
           else if (label.indexOf('heating') !== -1) heatingIdx = i;
           else if (label.indexOf('bottom') !== -1) bottomIdx = i;
         }
